@@ -8,6 +8,8 @@ class WalletService {
   async get() {
     try {
       const wallets = await this.wallet.find();
+      if (!wallets || wallets.length === 0)
+        throw new CustomError("Wallets not found", 404);
       return wallets;
     } catch (error) {
       return error;
@@ -35,14 +37,14 @@ class WalletService {
       if (!wallet) throw new CustomError("Wallet not created", 500);
       return wallet;
     } catch (error) {
-      console.error(error);
+      return error;
     }
   }
   async updateOne(id, email) {
     try {
       const updateEmail = {};
       const findEmail = await this.wallet.findOne({ email });
-      if (findEmail) throw new Error("Email already exists");
+      if (findEmail) throw new CustomError("Email already exists");
       if (email) updateEmail.email = email;
       const updateWallet = await this.wallet.findByIdAndUpdate(id, {
         $set: updateEmail,
@@ -50,7 +52,7 @@ class WalletService {
       if (!updateWallet) throw new CustomError("Wallet not updated");
       return updateWallet;
     } catch (error) {
-      console.error(error);
+      return error;
     }
   }
 }

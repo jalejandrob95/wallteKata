@@ -14,20 +14,29 @@ const router = express.Router();
 router
   .get("/", validateRequest, get)
   .get(
-    "/",
+    "/:id",
     param("id").isMongoId().notEmpty().withMessage("id is required"),
     validateRequest,
     getById
   )
   .post(
     "/",
-    body("email").normalizeEmail().notEmpty().withMessage("email is required"),
+    body("email")
+      .isEmail()
+      .normalizeEmail()
+      .notEmpty()
+      .withMessage("email is required"),
     validateRequest,
     create
   )
   .put(
     "/:id",
     param("id").isMongoId().notEmpty().withMessage("id is required"),
+    body("email")
+      .isEmail()
+      .normalizeEmail()
+      .notEmpty()
+      .withMessage("email is required"),
     validateRequest,
     updateOne
   )
