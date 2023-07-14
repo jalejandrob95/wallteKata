@@ -4,14 +4,15 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 
+//local middlewares
+const { swaggerDocs: V1SwaggerDocs } = require("./v1/swagger");
+const handleError = require("./middlewares/customError");
+
 //database
 const { connect } = require("./database/db");
 
 //routes
 const routesApi = require("./v1/routes");
-
-//local middlewares
-const handleError = require("./middlewares/customError");
 
 const app = express();
 //database
@@ -32,4 +33,5 @@ app.use(handleError);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port http://localhost:${PORT}`);
+  V1SwaggerDocs(app, PORT);
 });
