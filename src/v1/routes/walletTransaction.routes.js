@@ -21,7 +21,12 @@ router
     validateRequest,
     deposit
   )
-  .get("/:id", printBalance)
+  .get(
+    "report/:id",
+    param("id").isMongoId().notEmpty().withMessage("id is required"),
+    validateRequest,
+    printBalance
+  )
   .put(
     "/withdraw/:id",
     param("id").isMongoId().notEmpty().withMessage("id is required"),

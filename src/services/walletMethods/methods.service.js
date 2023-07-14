@@ -114,7 +114,7 @@ class TransactionMethods {
 
       if (!wallet) throw new CustomError("Wallet not updated", 500);
 
-      const updateWallet = await this.updateBalance(walletId, currency);
+      const updateWallet = await Wallet.findById(walletId);
       if (!updateWallet) throw new CustomError("Wallet not found", 404);
 
       return updateWallet;

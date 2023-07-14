@@ -107,6 +107,7 @@ class Exchange extends TransactionMethods {
       );
       if (sourceAmount.hasOwnProperty("status") && sourceAmount.status != 200)
         return new CustomError(sourceAmount.message, sourceAmount.status);
+
       const transactionExange = await this.createTrxExchange(
         walletId,
         amount,
@@ -123,20 +124,6 @@ class Exchange extends TransactionMethods {
           transactionExange.status
         );
 
-      const transactionWithdraw = await this.createTransaction(
-        walletId,
-        amount,
-        sourceCurrency,
-        "withdraw"
-      );
-      if (
-        transactionWithdraw.hasOwnProperty("status") &&
-        transactionWithdraw.status != 200
-      )
-        return new CustomError(
-          transactionWithdraw.message,
-          transactionWithdraw.status
-        );
       const transactionDeposit = await this.createTransaction(
         walletId,
         sourceAmount.price,
@@ -151,18 +138,69 @@ class Exchange extends TransactionMethods {
           transactionDeposit.message,
           transactionDeposit.status
         );
-      const updateTarget = await this.updateBalance(walletId, targetCurrency);
-      if (updateTarget.hasOwnProperty("status") && updateTarget.status != 200)
-        return new CustomError(updateTarget.message, updateTarget.status);
-      /*  const updateSource = await this.updateBalance(walletId, sourceCurrency);
-      if (updateSource.hasOwnProperty("status") && updateSource.status != 200)
-        return new CustomError(updateSource.message, updateSource.status); */
 
-      return updateSource;
+      const transactionWithdraw = await this.createTransaction(
+        walletId,
+        amount,
+        sourceCurrency,
+        "withdraw"
+      );
+      if (
+        transactionWithdraw.hasOwnProperty("status") &&
+        transactionWithdraw.status != 200
+      )
+        return new CustomError(
+          transactionWithdraw.message,
+          transactionWithdraw.status
+        );
+
+      const updateTargetCurrency = await this.updateBalance(
+        walletId,
+        targetCurrency
+      );
+      if (
+        updateTargetCurrency.hasOwnProperty("status") &&
+        updateTargetCurrency.status != 200
+      )
+        return new CustomError(
+          updateTargetCurrency.message,
+          updateTargetCurrency.status
+        );
+
+      const updateSourceCurrency = await this.updateBalance(
+        walletId,
+        sourceCurrency
+      );
+      if (
+        updateSourceCurrency.hasOwnProperty("status") &&
+        updateSourceCurrency.status != 200
+      )
+        return new CustomError(
+          updateSourceCurrency.message,
+          updateSourceCurrency.status
+        );
+      return updateTargetCurrency;
     } catch (error) {
       return error;
     }
   }
 }
 
-module.exports = { Deposit, Withdraw, Exchange };
+class Balance extends TransactionMethods {
+  async getBalance(walletId, currency) {
+    try {
+      const updateCurrencies = await this.updateBalance(walletId, currency);
+      if (
+        updateCurrencies.hasOwnProperty("status") &&
+        updateCurrencies.status != 200
+      )
+        return new CustomError(
+          updateCurrencies.message,
+          updateCurrencies.status
+        );
+    } catch (error) {
+      return error;
+    }
+  }
+}
+module.exports = { Deposit, Withdraw, Exchange, Balance };

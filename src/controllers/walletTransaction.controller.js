@@ -43,15 +43,14 @@ const exchange = async (req, res) => {
   try {
     const { id } = req.params;
     const { sourceCurrency, targetCurrency, amount } = req.body;
-    const exchange = methods.createTransaction("exchange");
-    const wallet = await exchange.createExchange(
+    const exchangeService = methods.createTransaction("exchange");
+    const wallet = await exchangeService.createExchange(
       id,
       amount,
       sourceCurrency,
       targetCurrency,
       "exchange"
     );
-    console.log({ wallet });
     if (wallet.hasOwnProperty("status") && wallet.status != 200)
       throw new CustomError(wallet.message, wallet.status);
 
@@ -62,6 +61,8 @@ const exchange = async (req, res) => {
 };
 const printBalance = async (req, res) => {
   try {
+    const { id } = req.params;
+    const printBalance = methods.createTransaction("printBalance");
     res.status(200).json({ message: "Hello world" });
   } catch (error) {}
 };

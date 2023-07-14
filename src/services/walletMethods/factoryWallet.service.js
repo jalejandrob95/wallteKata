@@ -1,4 +1,9 @@
-const { Deposit, Withdraw, Exchange } = require("./transactions.service");
+const {
+  Deposit,
+  Withdraw,
+  Exchange,
+  Balance,
+} = require("./transactions.service");
 //factory class
 class TransactionFactory {
   constructor() {}
@@ -10,6 +15,8 @@ class TransactionFactory {
         return new Withdraw();
       case "exchange":
         return new Exchange();
+      case "printBalance":
+        return new Balance();
       default:
         throw new Error("Invalid transaction type");
     }
