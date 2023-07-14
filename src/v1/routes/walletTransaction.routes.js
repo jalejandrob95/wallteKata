@@ -1,15 +1,35 @@
 const express = require("express");
-const { body, params } = require("express-validator");
+const { body, param } = require("express-validator");
 
-const { transaction } = require("../../controllers");
+const {
+  deposit,
+  withdraw,
+  exchange,
+  printBalance,
+} = require("../../controllers/walletTransaction.controller");
+
 const validateRequest = require("../../middlewares/validationRequest");
 
 const router = express.Router();
 
 router
-  .post("/", transaction.deposit)
-  .get("/:id", transaction.printBalance)
-  .put("/:id", transaction.withdraw)
-  .put("/:id", transaction.exchange);
+  .post(
+    "/deposit/:id",
+    param("id").isMongoId().notEmpty().withMessage("id is required"),
+    body("currency").notEmpty().withMessage("currency is required"),
+    body("amount").notEmpty().withMessage("amount is required"),
+    validateRequest,
+    deposit
+  )
+  .get("/:id", printBalance)
+  .put(
+    "/withdraw/:id",
+    param("id").isMongoId().notEmpty().withMessage("id is required"),
+    body("currency").notEmpty().withMessage("currency is required"),
+    body("amount").notEmpty().withMessage("amount is required"),
+    validateRequest,
+    withdraw
+  )
+  .put("/:id", exchange);
 
 module.exports = router;
