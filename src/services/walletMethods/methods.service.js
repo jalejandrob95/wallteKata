@@ -127,6 +127,18 @@ class TransactionMethods {
     console.error(error);
     return error;
   }
+
+  async getLastTrx(walletId) {
+    try {
+      const trx = await Transaction.find({ walletId })
+        .sort({ createdAt: -1 })
+        .limit(10);
+      if (!trx) throw new CustomError("Transactions not found", 404);
+      return trx;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
 
 module.exports = TransactionMethods;

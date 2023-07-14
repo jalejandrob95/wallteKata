@@ -66,14 +66,16 @@ const printBalance = async (req, res) => {
     const USD = await printBalance.getBalance(id, "USD");
     const EUR = await printBalance.getBalance(id, "EUR");
     const ARS = await printBalance.getBalance(id, "ARS");
+    const lastTrx = await printBalance.getTrx(id);
     if (
       (USD.hasOwnProperty("status") && USD.status != 200) ||
       (EUR.hasOwnProperty("status") && EUR.status != 200) ||
-      (ARS.hasOwnProperty("status") && ARS.status != 200)
+      (ARS.hasOwnProperty("status") && ARS.status != 200) ||
+      (lastTrx.hasOwnProperty("status") && lastTrx.status != 200)
     )
       throw new CustomError(wallet.message, wallet.status);
 
-    return res.status(200).json(ARS);
+    return res.status(200).json({ ARS, lastTrx });
   } catch (error) {
     return res.status(error.status || 500).json(error);
   }

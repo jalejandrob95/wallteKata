@@ -203,5 +203,15 @@ class Balance extends TransactionMethods {
       return error;
     }
   }
+  async getTrx(walletId) {
+    try {
+      const transactions = await this.getLastTrx(walletId);
+      if (transactions.hasOwnProperty("status") && transactions.status != 200)
+        return new CustomError(transactions.message, transactions.status);
+      return transactions;
+    } catch (error) {
+      return error;
+    }
+  }
 }
 module.exports = { Deposit, Withdraw, Exchange, Balance };
