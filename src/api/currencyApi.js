@@ -4,7 +4,7 @@ const convertCurrency = async (sourceCurrency, targetCurrency, amount) => {
   try {
     const url = `https://currency-converter219.p.rapidapi.com/converter?source=${sourceCurrency}&target=${targetCurrency}&amount=${amount}`;
     const headers = {
-      "X-RapidAPI-Key": node.env.API_KEY,
+      "X-RapidAPI-Key": process.env.API_KEY,
       "X-RapidAPI-Host": "currency-converter219.p.rapidapi.com",
     };
 

@@ -30,6 +30,14 @@ router
     validateRequest,
     withdraw
   )
-  .put("/:id", exchange);
+  .put(
+    "/exchange/:id",
+    param("id").isMongoId().notEmpty().withMessage("id is required"),
+    body("targetCurrency").notEmpty().withMessage("currency is required"),
+    body("sourceCurrency").notEmpty().withMessage("currency is required"),
+    body("amount").notEmpty().withMessage("amount is required"),
+    validateRequest,
+    exchange
+  );
 
 module.exports = router;

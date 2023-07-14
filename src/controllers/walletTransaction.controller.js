@@ -1,4 +1,4 @@
-const TransactionFactory = require("../services/transactions.service");
+const TransactionFactory = require("../services/walletMethods/factoryWallet.service");
 const CustomError = require("../services/Error/errorHandler.service.js");
 
 const methods = new TransactionFactory();
@@ -41,8 +41,24 @@ const withdraw = async (req, res) => {
 };
 const exchange = async (req, res) => {
   try {
-    res.status(200).json({ message: "Hello world" });
-  } catch (error) {}
+    const { id } = req.params;
+    const { sourceCurrency, targetCurrency, amount } = req.body;
+    const exchange = methods.createTransaction("exchange");
+    const wallet = await exchange.createExchange(
+      id,
+      amount,
+      sourceCurrency,
+      targetCurrency,
+      "exchange"
+    );
+    console.log({ wallet });
+    if (wallet.hasOwnProperty("status") && wallet.status != 200)
+      throw new CustomError(wallet.message, wallet.status);
+
+    return res.status(200).json(wallet);
+  } catch (error) {
+    return res.status(error.status || 500).json(error);
+  }
 };
 const printBalance = async (req, res) => {
   try {
