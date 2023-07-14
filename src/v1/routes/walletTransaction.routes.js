@@ -22,7 +22,7 @@ router
     deposit
   )
   .get(
-    "report/:id",
+    "/report/:id",
     param("id").isMongoId().notEmpty().withMessage("id is required"),
     validateRequest,
     printBalance

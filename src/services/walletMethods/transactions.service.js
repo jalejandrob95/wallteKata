@@ -179,7 +179,7 @@ class Exchange extends TransactionMethods {
           updateSourceCurrency.message,
           updateSourceCurrency.status
         );
-      return updateTargetCurrency;
+      return updateSourceCurrency;
     } catch (error) {
       return error;
     }
@@ -198,6 +198,7 @@ class Balance extends TransactionMethods {
           updateCurrencies.message,
           updateCurrencies.status
         );
+      return updateCurrencies;
     } catch (error) {
       return error;
     }

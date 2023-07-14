@@ -63,8 +63,20 @@ const printBalance = async (req, res) => {
   try {
     const { id } = req.params;
     const printBalance = methods.createTransaction("printBalance");
-    res.status(200).json({ message: "Hello world" });
-  } catch (error) {}
+    const USD = await printBalance.getBalance(id, "USD");
+    const EUR = await printBalance.getBalance(id, "EUR");
+    const ARS = await printBalance.getBalance(id, "ARS");
+    if (
+      (USD.hasOwnProperty("status") && USD.status != 200) ||
+      (EUR.hasOwnProperty("status") && EUR.status != 200) ||
+      (ARS.hasOwnProperty("status") && ARS.status != 200)
+    )
+      throw new CustomError(wallet.message, wallet.status);
+
+    return res.status(200).json(ARS);
+  } catch (error) {
+    return res.status(error.status || 500).json(error);
+  }
 };
 
 module.exports = {
