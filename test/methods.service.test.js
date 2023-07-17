@@ -2,75 +2,121 @@ const { expect } = require("chai");
 const sinon = require("sinon");
 const TransactionMethods = require("../src/services/walletMethods/methods.service");
 const Wallet = require("../src/database/wallet");
+const Transaction = require("../src/database/trx");
 const { connect } = require("../src/database/db");
 
 describe("TransactionMethods", () => {
   let transactionMethods;
   let sandbox;
 
-  before(async () => {
+  beforeEach(async () => {
     await connect();
-  });
-
-  beforeEach(() => {
     transactionMethods = new TransactionMethods();
     sandbox = sinon.createSandbox();
   });
 
-  describe("transformCurrency", () => {
-    it("should throw an error if conversion is not found", async () => {
-      const convertCurrencyMock = sinon.mock().resolves(null);
-
-      transactionMethods.convertCurrency = convertCurrencyMock;
-
-      const sourceCurrency = "USD";
-      const targetCurrency = "EUR";
-      const amount = 100;
-
-      try {
-        await transactionMethods.transformCurrency(
-          sourceCurrency,
-          targetCurrency,
-          amount
-        );
-      } catch (error) {
-        expect(error.message).to.equal("Conversion not found");
-        expect(error.statusCode).to.equal(404);
-      }
-    });
+  afterEach(() => {
+    sandbox.restore();
   });
 
-  describe("validateWallet", () => {
-    afterEach(() => {
-      sandbox.restore();
-    });
-    it("should call Wallet.findById with the correct walletId", async () => {
+  describe("validateWithdraw", () => {
+    it("should validate wallet and check if funds are sufficient for withdrawal", async () => {
       const walletId = "123";
+      const amount = 100;
+      const currency = "USD";
+
+      const walletData = {
+        _id: walletId,
+        currentAmount: {
+          USD: 200,
+        },
+      };
 
       const findByIdStub = sandbox
         .stub(Wallet, "findById")
-        .resolves({ walletId });
+        .resolves(walletData);
 
-      await transactionMethods.validateWallet(walletId);
+      const result = await transactionMethods.validateWithdraw(
+        walletId,
+        amount,
+        currency
+      );
 
       expect(findByIdStub.calledOnceWithExactly(walletId)).to.be.true;
+      expect(result).to.deep.equal(walletData);
     });
 
     it("should throw an error if wallet is not found", async () => {
       const walletId = "123";
+      const amount = 100;
+      const currency = "USD";
 
       const findByIdStub = sandbox.stub(Wallet, "findById").resolves(null);
 
       try {
-        await transactionMethods.validateWallet(walletId);
+        await transactionMethods.validateWithdraw(walletId, amount, currency);
       } catch (error) {
         expect(error.message).to.equal("Wallet not found");
         expect(error.statusCode).to.equal(404);
       }
     });
+
+    it("should throw an error if funds are insufficient for withdrawal", async () => {
+      const walletId = "123";
+      const amount = 100;
+      const currency = "USD";
+
+      const walletData = {
+        _id: walletId,
+        currentAmount: {
+          USD: 50,
+        },
+      };
+
+      const findByIdStub = sandbox
+        .stub(Wallet, "findById")
+        .resolves(walletData);
+
+      try {
+        await transactionMethods.validateWithdraw(walletId, amount, currency);
+      } catch (error) {
+        expect(error.message).to.equal("Insufficient funds");
+        expect(error.statusCode).to.equal(400);
+      }
+    });
   });
 
-  afterEach(() => {
-    sinon.restore();
+  describe("updateBalance", () => {
+    it("should throw an error if no transactions are found", async () => {
+      const walletId = "123";
+      const currency = "USD";
+
+      const findByIdStub = sandbox.stub(Transaction, "find").resolves([]);
+      const updateByIdStub = sandbox
+        .stub(Wallet, "findByIdAndUpdate")
+        .resolves(null);
+
+      try {
+        await transactionMethods.updateBalance(walletId, currency);
+      } catch (error) {
+        expect(error.message).to.equal("Transactions not found");
+        expect(error.statusCode).to.equal(404);
+      }
+    });
+  });
+
+  describe("getLastTrx", () => {
+    it("should throw an error if no transactions are found", async () => {
+      const walletId = "123";
+
+      const findStub = sandbox.stub(Transaction, "find").resolves([]);
+
+      try {
+        await transactionMethods.getLastTrx(walletId);
+      } catch (error) {
+        expect(error.message).to.equal("Transactions not found");
+        expect(error.statusCode).to.equal(404);
+      }
+    });
   });
 });
