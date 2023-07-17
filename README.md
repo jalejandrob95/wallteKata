@@ -1,4 +1,4 @@
-```
+
 # Project Name
 WALLET APP
 ## Description
