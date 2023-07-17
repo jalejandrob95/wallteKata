@@ -15,7 +15,6 @@ class WalletService {
 
       return wallets;
     } catch (error) {
-      console.error(error);
       return error;
     }
   }

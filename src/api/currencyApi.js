@@ -15,8 +15,16 @@ const convertCurrency = async (sourceCurrency, targetCurrency, amount) => {
     };
     const resp = await fetch(url, config);
     const data = await resp.json();
-
-    return data.results[0];
+    if (
+      data &&
+      data.results &&
+      Array.isArray(data.results) &&
+      data.results.length > 0
+    ) {
+      return data.results[0];
+    } else {
+      throw new Error("Invalid response data");
+    }
   } catch (error) {
     return error;
   }

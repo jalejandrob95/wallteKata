@@ -35,3 +35,5 @@ app.listen(PORT, () => {
   console.log(`🚀 Server is running on port http://localhost:${PORT}`);
   V1SwaggerDocs(app, PORT);
 });
+
+module.exports = app;
