@@ -12,7 +12,7 @@ describe("convertCurrency", () => {
     expect(data).to.have.property("price").that.is.a("number");
   });
 
-  it.skip("should throw an error for invalid response data", async () => {
+  it("should throw an error for invalid response data", async () => {
     // Mocking an invalid response
     const invalidData = {
       results: null,
@@ -38,7 +38,7 @@ describe("convertCurrency", () => {
     global.fetch = originalFetch;
   });
 
-  it.skip("should handle network errors", async () => {
+  it("should handle network errors", async () => {
     // Mock the fetch function to simulate a network error
     const originalFetch = global.fetch;
     global.fetch = () => Promise.reject(new Error("Network error"));

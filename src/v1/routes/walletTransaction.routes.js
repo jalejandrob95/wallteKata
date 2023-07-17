@@ -53,7 +53,10 @@ router
   .post(
     "/deposit/:id",
     param("id").isMongoId().notEmpty().withMessage("id is required"),
-    body("currency").notEmpty().withMessage("currency is required"),
+    body("currency")
+      .notEmpty()
+      .isIn(["USD", "EUR", "ARS"])
+      .withMessage("currency is required"),
     body("amount").notEmpty().withMessage("amount is required"),
     validateRequest,
     deposit
@@ -126,7 +129,10 @@ router
   .put(
     "/withdraw/:id",
     param("id").isMongoId().notEmpty().withMessage("id is required"),
-    body("currency").notEmpty().withMessage("currency is required"),
+    body("currency")
+      .notEmpty()
+      .isIn(["USD", "EUR", "ARS"])
+      .withMessage("currency is required"),
     body("amount").notEmpty().withMessage("amount is required"),
     validateRequest,
     withdraw
@@ -175,8 +181,14 @@ router
   .put(
     "/exchange/:id",
     param("id").isMongoId().notEmpty().withMessage("id is required"),
-    body("targetCurrency").notEmpty().withMessage("currency is required"),
-    body("sourceCurrency").notEmpty().withMessage("currency is required"),
+    body("targetCurrency")
+      .notEmpty()
+      .isIn(["USD", "EUR", "ARS"])
+      .withMessage("currency is required"),
+    body("sourceCurrency")
+      .notEmpty()
+      .isIn(["USD", "EUR", "ARS"])
+      .withMessage("currency is required"),
     body("amount").notEmpty().withMessage("amount is required"),
     validateRequest,
     exchange
