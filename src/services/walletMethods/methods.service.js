@@ -2,7 +2,6 @@ const Wallet = require("../../database/wallet");
 const convertCurrency = require("../../api/currencyApi");
 const Transaction = require("../../database/trx");
 const CustomError = require("../Error/errorHandler.service");
-const mongoose = require("mongoose");
 
 class TransactionMethods {
   async transformCurrency(sourceCurrency, targetCurrency, amount) {
