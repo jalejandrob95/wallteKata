@@ -14,7 +14,6 @@ class TransactionMethods {
       if (!conversion) throw new CustomError("Conversion not found", 404);
       return conversion;
     } catch (error) {
-      console.log(error);
       return error;
     }
   }
@@ -41,7 +40,6 @@ class TransactionMethods {
       if (!transaction) throw new CustomError("Transaction not created", 500);
       return transaction;
     } catch (error) {
-      console.error(error);
       return error;
     }
   }
@@ -65,7 +63,6 @@ class TransactionMethods {
       if (!transaction) throw new CustomError("Transaction not created", 500);
       return transaction;
     } catch (error) {
-      console.error(error);
       return error;
     }
   }
@@ -78,7 +75,6 @@ class TransactionMethods {
         throw new CustomError("Insufficient funds", 400);
       return wallet;
     } catch (error) {
-      console.log(error);
       return error;
     }
   }
@@ -118,13 +114,8 @@ class TransactionMethods {
 
       return updateWallet;
     } catch (error) {
-      console.error(error);
       return error;
     }
-  }
-  catch(error) {
-    console.error(error);
-    return error;
   }
 
   async getLastTrx(walletId) {
@@ -135,7 +126,7 @@ class TransactionMethods {
       if (!trx) throw new CustomError("Transactions not found", 404);
       return trx;
     } catch (error) {
-      console.error(error);
+      return error;
     }
   }
 }

@@ -25,7 +25,6 @@ class Deposit extends TransactionMethods {
       if (!updateWallet) throw new CustomError("Wallet not updated", 500);
       return updateWallet;
     } catch (error) {
-      console.error(error);
       return error;
     }
   }

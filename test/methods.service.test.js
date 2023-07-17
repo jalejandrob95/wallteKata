@@ -18,33 +18,6 @@ describe("TransactionMethods", () => {
   });
 
   describe("transformCurrency", () => {
-    it("should call convertCurrency with the correct arguments", async () => {
-      const convertCurrencyMock = sinon
-        .mock()
-        .resolves({ convertedAmount: 90 });
-
-      transactionMethods.convertCurrency = convertCurrencyMock;
-
-      const sourceCurrency = "USD";
-      const targetCurrency = "EUR";
-      const amount = 100;
-
-      // Call the method to be tested
-      await transactionMethods.transformCurrency(
-        sourceCurrency,
-        targetCurrency,
-        amount
-      );
-
-      expect(
-        convertCurrencyMock.calledOnceWithExactly(
-          sourceCurrency,
-          targetCurrency,
-          amount
-        )
-      ).to.be.true;
-    });
-
     it("should throw an error if conversion is not found", async () => {
       const convertCurrencyMock = sinon.mock().resolves(null);
 

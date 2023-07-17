@@ -7,7 +7,17 @@
     "start": "nodemon ./src/inde.js",
     "dev": "nodemon src/index.js",
     "test": "mocha --exit",
-    "converage": "nyc --reporter=html --reporter=text mocha --exit"
+    "coverage": "nyc --reporter=html --reporter=text mocha npm run test"
+  },
+  "nyc": {
+    "all": true,
+    "check-coverage": true,
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "**/*.spec.js"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -17,6 +27,7 @@
     "chai-http": "^4.4.0",
     "mocha": "^10.2.0",
     "nodemon": "^3.0.1",
+    "nyc": "^15.1.0",
     "sinon": "^15.2.0"
   },
   "dependencies": {
